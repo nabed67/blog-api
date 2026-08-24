@@ -11,7 +11,7 @@ export class AppController {
   @Public()
   @Get()
   @ApiOperation({ summary: 'Welcome to the API' })
-  getWelcome(): string {
+  getWelcome() {
     return this.appService.getWelcome();
   }
 }
