@@ -12,18 +12,150 @@ enum Role {
   ADMIN
 }
 
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+}
+
 model User {
-  id                 Int       @id @default(autoincrement())
-  username           String    @unique
-  email              String    @unique
+  id                 Int        @id @default(autoincrement())
+  username           String     @unique
+  email              String     @unique
   password           String
   displayName        String?
   avatar             String?
   bio                String?
-  role               Role      @default(USER)
-  isActive           Boolean   @default(true)
+  role               Role       @default(USER)
+  isActive           Boolean    @default(true)
   hashedRefreshToken String?
   deletedAt          DateTime?
-  updatedAt          DateTime  @updatedAt
-  createdAt          DateTime  @default(now())
+  updatedAt          DateTime   @updatedAt
+  createdAt          DateTime   @default(now())
+
+  posts     Post[]
+  comments  Comment[]
+  reactions Reaction[]
+  mentions  Mention[]  @relation("MentionedUser")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  deletedAt   DateTime?
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+
+  posts Post[]
+}
+
+model Post {
+  id           Int        @id @default(autoincrement())
+  title        String
+  slug         String     @unique
+  content      String     @db.Text
+  status       PostStatus @default(DRAFT)
+  viewCount    Int        @default(0)
+  likeCount    Int        @default(0)
+  dislikeCount Int        @default(0)
+
+  authorId   Int
+  author     User      @relation(fields: [authorId], references: [id])
+  categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  attachments Attachment[]
+  comments    Comment[]
+  reactions   Reaction[]
+  mentions    Mention[]
+
+  deletedAt DateTime?
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+
+  @@index([authorId, status])
+  @@index([categoryId, status])
+  @@index([createdAt(sort: Desc)])
+}
+
+model Attachment {
+  id         Int       @id @default(autoincrement())
+  url        String
+  storageKey String  // AWS S3 Key
+  type       MediaType
+  mimeType   String
+  size       Int
+  filename   String
+  width      Int?
+  height     Int?
+  duration   Float? // For video
+  createdAt  DateTime  @default(now())
+
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  content String @db.Text
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+  postId   Int
+  post     Post @relation(fields: [postId], references: [id])
+
+  parentId String?
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+
+  mentions  Mention[]
+
+  deletedAt DateTime?
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+
+  @@index([postId, parentId, createdAt])
+}
+
+model Mention {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  mentionedUserId Int
+  mentionedUser   User @relation("MentionedUser", fields: [mentionedUserId], references: [id])
+
+  postId    Int?
+  post      Post?    @relation(fields: [postId], references: [id])
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+
+  @@unique([mentionedUserId, postId])
+  @@unique([mentionedUserId, commentId])
+}
+
+model Reaction {
+  id   Int          @id @default(autoincrement())
+  type ReactionType
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@index([postId, type])
 }
