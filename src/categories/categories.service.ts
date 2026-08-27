@@ -1,8 +1,8 @@
 import {
-  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 import type Redis from 'ioredis';
 
@@ -145,6 +145,10 @@ export class CategoriesService {
     await this.invalidateCache();
   }
 
+  /** ================================
+   * Helper functions
+   * ================================
+   */
   private async invalidateCache() {
     await this.redis.del(CACHE_KEY);
   }

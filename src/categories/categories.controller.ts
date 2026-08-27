@@ -11,7 +11,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Role } from 'generated/prisma/client';
+import { UserRole } from 'src/users/interfaces/user-role.interface';
 
 import { Public } from 'src/common/decorators/public.decorator';
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -25,7 +25,7 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[Admin] Create a new category' })
   create(@Body() dto: CreateCategoryDto) {
@@ -47,7 +47,7 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: '[Admin] Update a category' })
   update(
@@ -58,7 +58,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: '[Admin] Soft-delete a category' })

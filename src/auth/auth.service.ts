@@ -8,11 +8,11 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import * as argon2 from 'argon2';
 
-import { Configuration } from 'src/common/interfaces/config.interface';
 import { DbService } from 'src/db/db.service';
+import { User } from 'src/users/interfaces/user.interface';
+import { Configuration } from 'src/common/interfaces/config.interface';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { User } from './interfaces/user.interface';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_TTL_MS } from './constants';
 

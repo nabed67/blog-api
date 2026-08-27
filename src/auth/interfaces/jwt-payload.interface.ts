@@ -1,4 +1,4 @@
-import { User } from './user.interface';
+import { User } from 'src/users/interfaces/user.interface';
 
 export interface JwtPayload {
   sub: number;
