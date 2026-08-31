@@ -151,7 +151,6 @@ export class PostsService {
       },
       select: {
         ...POST_SELECT,
-        attachments: true,
         comments: { take: 10 },
       },
     });

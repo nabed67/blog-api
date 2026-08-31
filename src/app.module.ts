@@ -12,6 +12,7 @@ import { RedisModule } from './redis/redis.module';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { PostsModule } from './posts/posts.module';
+import { MediaModule } from './media/media.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import type { Configuration } from './common/interfaces/config.interface';
@@ -43,6 +44,7 @@ import { validationSchema } from './utils/env.validation';
     UsersModule,
     CategoriesModule,
     PostsModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [
