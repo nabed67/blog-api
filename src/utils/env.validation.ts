@@ -36,7 +36,6 @@ export const validationSchema = Joi.object({
       'any.required': 'JWT_REFRESH_SECRET is required',
       'string.min': `JWT_REFRESH_SECRET must be at least ${MIN_SECRET_LENGTH} characters`,
     }),
-  JWT_EXPIRES_IN: Joi.string().default('15m'),
 
   REDIS_URL: Joi.string()
     .uri({ scheme: ['redis', 'rediss'] })

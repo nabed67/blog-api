@@ -14,7 +14,12 @@ import { Configuration } from 'src/common/interfaces/config.interface';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_TTL_MS } from './constants';
+import {
+  REFRESH_TOKEN_COOKIE,
+  REFRESH_TOKEN_TTL_MS,
+  ACCESS_TOKEN_EXPIRES_IN,
+  REFRESH_TOKEN_EXPIRES_IN,
+} from './constants';
 
 @Injectable()
 export class AuthService {
@@ -126,12 +131,12 @@ export class AuthService {
   private issueTokens(payload: JwtPayload) {
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET', { infer: true }),
-      expiresIn: this.configService.get('JWT_EXPIRES_IN', { infer: true }),
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
     });
 
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
-      expiresIn: '7d',
+      expiresIn: REFRESH_TOKEN_EXPIRES_IN,
     });
 
     return { accessToken, refreshToken };

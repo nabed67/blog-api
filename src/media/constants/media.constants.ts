@@ -33,5 +33,4 @@ export const WEBP_SECONDARY_BYTES = {
   offset: 8,
 };
 
-/** How many header bytes to read for magic byte validation */
 export const MAGIC_BYTE_HEADER_LENGTH = 16;

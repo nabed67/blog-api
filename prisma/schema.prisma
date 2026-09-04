@@ -113,7 +113,7 @@ model Attachment {
 }
 
 model Comment {
-  id      String @id @default(cuid())
+  id         Int              @id @default(autoincrement())
   content String @db.Text
 
   authorId Int
@@ -121,7 +121,7 @@ model Comment {
   postId   Int
   post     Post @relation(fields: [postId], references: [id])
 
-  parentId String?
+  parentId Int?
   parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies  Comment[] @relation("CommentReplies")
 
@@ -143,7 +143,7 @@ model Mention {
 
   postId    Int?
   post      Post?    @relation(fields: [postId], references: [id])
-  commentId String?
+  commentId Int?
   comment   Comment? @relation(fields: [commentId], references: [id])
 
   @@unique([mentionedUserId, postId])

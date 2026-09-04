@@ -9,68 +9,15 @@ import DOMPurify from 'isomorphic-dompurify';
 
 import { DbService } from 'src/db/db.service';
 import { REDIS_CLIENT } from 'src/redis/redis.module';
+import { CategoriesService } from 'src/categories/categories.service';
 import { UserRole } from 'src/users/interfaces/user-role.interface';
 import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
 import { PostStatus } from './interfaces/post-status.interface';
+import { PaginationCursor } from './interfaces/pagination-cursor.interface';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostQueryDto } from './dto/post-query.dto';
-import { CategoriesService } from 'src/categories/categories.service';
-
-const ALLOWED_TAGS = [
-  'b',
-  'i',
-  'a',
-  'p',
-  'h2',
-  'h3',
-  'h4',
-  'ul',
-  'ol',
-  'li',
-  'code',
-  'pre',
-  'img',
-  'strong',
-  'em',
-  'blockquote',
-  'br',
-];
-
-const ALLOWED_ATTR = ['href', 'src', 'alt', 'title', 'class', 'target', 'rel'];
-
-const POST_SELECT = {
-  id: true,
-  title: true,
-  slug: true,
-  content: true,
-  status: true,
-  viewCount: true,
-  likeCount: true,
-  dislikeCount: true,
-  createdAt: true,
-  updatedAt: true,
-  author: {
-    select: {
-      id: true,
-      username: true,
-      displayName: true,
-      avatar: true,
-    },
-  },
-  category: {
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-    },
-  },
-} as const;
-
-interface PaginationCursor {
-  createdAt: string;
-  id: number;
-}
+import { ALLOWED_TAGS, ALLOWED_ATTR, POST_SELECT } from './constants';
 
 @Injectable()
 export class PostsService {
@@ -149,10 +96,7 @@ export class PostsService {
         deletedAt: null,
         status: PostStatus.PUBLISHED,
       },
-      select: {
-        ...POST_SELECT,
-        comments: { take: 10 },
-      },
+      select: POST_SELECT,
     });
 
     if (!post) {

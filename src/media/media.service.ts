@@ -97,11 +97,6 @@ export class MediaService {
     });
   }
 
-  /**
-   * Validates the binary header of the uploaded file against the expected
-   * magic bytes for the declared MIME type.
-   * Throws UnprocessableEntityException if they don't match.
-   */
   private validateMagicBytes(mimeType: AllowedMimeType, buffer: Buffer): void {
     const header = buffer.subarray(0, MAGIC_BYTE_HEADER_LENGTH);
     const patterns = MAGIC_BYTES[mimeType];
